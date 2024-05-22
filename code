@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
+#cmcrameri from callumrollo
+import cmcrameri
 
 # Path to the folder containing CSV files
 folder_path = "folder_path"
