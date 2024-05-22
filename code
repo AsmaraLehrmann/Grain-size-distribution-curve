@@ -1,12 +1,11 @@
-pip install pandas matplotlib
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-import numpy as np  # Add this import statement
+import numpy as np
 
 # Path to the folder containing CSV files
-folder_path = "/Users/alehrmann/Documents/Research_files/West_Antarctica/Amundsen_Sea/Dotson/CILAS-TEST/NBP2202-MC05-formatted"
+folder_path = "folder_path"
 
 # Initialize lists to store data from all files
 um_all = []
@@ -25,9 +24,9 @@ for filename in os.listdir(folder_path):
         # Append data to the lists
         um_all.append(um)
         indiv_perc_all.append(indiv_perc)
-        
+
 # Create a larger figure
-plt.figure(figsize=(12, 10))  # Adjust width and height as needed
+plt.figure(figsize=(10, 6))  # Adjust width and height as needed
 
 # Create a line plot for each file using matplotlib's built-in colormaps
 num_files = len(um_all)
@@ -36,12 +35,12 @@ for i, (um, indiv_perc) in enumerate(zip(um_all, indiv_perc_all)):
     color = color_map(i / num_files)
     plt.plot(um, indiv_perc, alpha=0.8, color=color)
 
-plt.title('NBP2202 MC05 Grain Size Distribution')
+plt.title('Distribution of "um" vs "indiv perc"')
 plt.xlabel('Grain size (µm)')  # Updated x-axis label
 plt.ylabel('wt %')  # Updated y-axis label
 plt.grid(True)
-plt.xlim(0, 100)  # Set the limit for the x-axis
-# Set ticks on x-axis with an interval of 5
-plt.xticks(np.arange(0, 101, 10))  # Start, End, Step
+
+# Set x-axis to be logarithmic
+plt.xscale('log')
 
 plt.show()
