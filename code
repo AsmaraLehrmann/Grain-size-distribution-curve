@@ -54,3 +54,6 @@ plt.legend([filename for filename in file_names_sorted], bbox_to_anchor=(1.05, 1
 
 plt.tight_layout()  # Adjust layout to prevent overlap
 plt.show()
+
+#Save as .svg
+plt.savefig('NBP2202KC06.svg', format='svg')
