@@ -3,10 +3,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
+import re
 import cmcrameri
 
 # Path to the folder containing CSV files
-folder_path = "/Users/alehrmann/Documents/Research_files/West_Antarctica/Amundsen_Sea/Dotson/grainsize/NBP2202_KC06/NBP2202_KC06_formatted"
+folder_path = "folder_path"
+
+# Function to extract numbers from file names
+def extract_numbers(filename):
+    return [int(s) for s in re.findall(r'\d+', filename)]
 
 # Initialize lists to store data from all files
 um_all = []
@@ -28,16 +33,16 @@ for filename in os.listdir(folder_path):
         indiv_perc_all.append(indiv_perc)
         file_names.append(filename)  # Store file name
 
-# Sort file names alphabetically
-file_names_sorted = sorted(file_names)
+# Sort file names numerically
+file_names_sorted = sorted(file_names, key=extract_numbers)
 
-# Create a larger figure
-plt.figure(figsize=(10, 6))  # Adjust width and height as needed
+# Create a larger figure for combined plot
+plt.figure(figsize=(10, 6))
 
 # Create a line plot for each file using cmcrameri's colormap
 num_files = len(um_all)
 color_palette = cmcrameri.cm.roma  # Using 'roma' colormap from cmcrameri
-for i, (um, indiv_perc, filename) in enumerate(zip(um_all, indiv_perc_all, file_names)):
+for i, (um, indiv_perc, filename) in enumerate(zip(um_all, indiv_perc_all, file_names_sorted)):
     color = color_palette(i / num_files)
     plt.plot(um, indiv_perc, alpha=0.8, color=color, label=filename)  # Add label for the file
 
@@ -50,10 +55,25 @@ plt.grid(True)
 plt.xscale('log')
 
 # Display legend outside the plot in alphabetical order
-plt.legend([filename for filename in file_names_sorted], bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.legend(sorted(file_names_sorted), bbox_to_anchor=(1.05, 1), loc='upper left')
 
 plt.tight_layout()  # Adjust layout to prevent overlap
-plt.show()
 
-#Save as .svg
-plt.savefig('NBP2202KC06.svg', format='svg')
+# Save the combined plot as .svg file
+plt.savefig('grainsize_distribution.svg', format='svg')
+
+# Create individual plots for each file
+for i, (um, indiv_perc, filename) in enumerate(zip(um_all, indiv_perc_all, file_names_sorted)):
+    plt.figure(figsize=(8, 6))
+    color = cm.tab10(i % 10)  # Use different colors for different plots
+    plt.plot(um, indiv_perc, alpha=0.8, color=color)
+    plt.title(f"Grain size distribution {filename}")  # Updated title
+    plt.xlabel('Grain size (µm)')
+    plt.ylabel('wt %')
+    plt.grid(True)
+    plt.xscale('log')
+    plt.tight_layout()
+    plt.savefig(f'{filename}_plot.svg', format='svg')  # Save individual plot
+    plt.show()  # Display individual plot in Python
+
+plt.show()  # Display combined plot in Python
