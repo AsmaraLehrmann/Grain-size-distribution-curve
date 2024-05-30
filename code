@@ -45,6 +45,9 @@ color_palette = cmcrameri.cm.roma  # Using 'roma' colormap from cmcrameri
 for i, (um, indiv_perc, filename) in enumerate(zip(um_all, indiv_perc_all, file_names_sorted)):
     color = color_palette(i / num_files)
     plt.plot(um, indiv_perc, alpha=0.8, color=color, label=filename)  # Add label for the file
+    
+    # Set x-axis limit to start from 0 and end at 1000
+    plt.xlim(0, 10000)
 
 plt.title('Distribution of "um" vs "indiv perc"')
 plt.xlabel('Grain size (µm)')  # Updated x-axis label
@@ -52,15 +55,17 @@ plt.ylabel('wt %')  # Updated y-axis label
 plt.grid(True)
 
 # Set x-axis to be logarithmic
+plt.xlim(1, 1000)  # Set the minimum and maximum values of the x-axis
 plt.xscale('log')
-
+plt.ylim(0, 0.1)
 # Display legend outside the plot in alphabetical order
-plt.legend(sorted(file_names_sorted), bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.legend(sorted(file_names_sorted, key=lambda x: int(re.search(r'\d+', x).group())), bbox_to_anchor=(1.05, 1), loc='upper left')
+
 
 plt.tight_layout()  # Adjust layout to prevent overlap
 
 # Save the combined plot as .svg file
-plt.savefig('grainsize_distribution.svg', format='svg')
+plt.savefig(os.path.join(folder_path, 'grainsize_distribution.svg'), format='svg')
 
 # Create individual plots for each file
 for i, (um, indiv_perc, filename) in enumerate(zip(um_all, indiv_perc_all, file_names_sorted)):
@@ -71,9 +76,10 @@ for i, (um, indiv_perc, filename) in enumerate(zip(um_all, indiv_perc_all, file_
     plt.xlabel('Grain size (µm)')
     plt.ylabel('wt %')
     plt.grid(True)
+    plt.xlim(1, 1000)  # Set the minimum and maximum values of the x-axis
     plt.xscale('log')
+    plt.ylim(0, 0.1)
     plt.tight_layout()
-    plt.savefig(f'{filename}_plot.svg', format='svg')  # Save individual plot
-    plt.show()  # Display individual plot in Python
+    plt.savefig(os.path.join(folder_path, f'{filename}_plot.svg'), format='svg')  # Save individual plot
 
 plt.show()  # Display combined plot in Python
